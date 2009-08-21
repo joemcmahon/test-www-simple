@@ -1,5 +1,15 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.28   Wed Dec 17 13:34:53 PST 2008
+	- Corrected prereqs (HTML::Tree, not TreeBuilder)
+
+0.27   Fri Sep 21 12:06:02 PDT 2007
+	- Remember that the changelog wasn't updated, sigh.
+
+0.26   Fri Sep 21 12:05:21 PDT 2007
+	- Fix the test that fails on Windows because of a 
+	  piped open.
+
 0.25   Mon Jun 12 15:57:45 PDT 2006
 	- on some platforms, the cache test faile because
 	  HTTP::Daemon constructs a URI composed of the 

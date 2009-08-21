@@ -1,5 +1,8 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.09  Tue Feb  2 10:03:56 2005
+        - minor changes to example simple_scan input
+
 0.08  Mon Feb  1 19:04:34 2005
         - Further updates to simple_scan
           -- expanded %%xx pragma support

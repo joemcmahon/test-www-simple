@@ -39,10 +39,10 @@ else {
   page_like('http://perl.org', qr/perl/i,   'intervening page');
   page_like('http://localhost:9980', qr/bbbbb/, 'cached from last get');
   page_like('http://localhost:9980', qr/bbbbb/, 'remains cached');
-  no_cache;
+  no_cache "turned off again";
   page_like('http://localhost:9980', qr/ccccc/, 'reaccessed again as expected');
   page_like('http://perl.org', qr/perl/i,   'intervening page');
-  cache;
+  cache "back on again";
   page_like('http://localhost:9980', qr/ccccc/, 'return to last cached value');
   no_cache;
   page_like('http://localhost:9980', qr/ddddd/, 'now a new value');

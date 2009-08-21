@@ -1,16 +1,15 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         Test-WWW-Simple
-version:      0.14
+version:      0.16
 version_from: lib/Test/WWW/Simple.pm
 installdirs:  site
 requires:
-    Getopt::Long:                  0
-    Regexp::Common:                0
     Test::Builder:                 0
     Test::LongString:              0
     Test::Tester:                  0
     WWW::Mechanize:                0
+    WWW::Mechanize::Pluggable:     0
 
 distribution_type: module
 generated_by: ExtUtils::MakeMaker version 6.28

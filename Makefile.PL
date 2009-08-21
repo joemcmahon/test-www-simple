@@ -11,7 +11,9 @@ my $parms =
     PREREQ_PM         => {'Test::Builder' => 0,
                           'Test::LongString' => 0,
                           'Test::Tester' => 0,
-                          'WWW::Mechanize' => 0}, # e.g., Module::Name => 1.1
+                          'WWW::Mechanize' => 0,
+                          'WWW::Mechanize::Pluggable' => 0,
+                         }, # e.g., Module::Name => 1.1
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Test/WWW/Simple.pm', # retrieve abstract from module
        AUTHOR         => 'Joe McMahon <mcmahon@cpan.org>') : ()),
@@ -21,18 +23,5 @@ my $parms =
 	# Un-comment this if you add C files to link with later:
     # OBJECT            => '$(O_FILES)', # link all the C files too
   };
-
-if ( prompt( "Do you want to install the simple_scan utility?", "y" ) =~ /^y/i ) {
-    $parms->{EXE_FILES} = [ 'examples/simple_scan' ];
-    $parms->{PREREQ_PM}->{'Getopt::Long'} = 0;
-    $parms->{PREREQ_PM}->{'Regexp::Common'} = 0;
-
-    local @ARGV = FLAG_SIMPLESCAN;
-    rm_f();
-} else {
-    local @ARGV = FLAG_SIMPLESCAN;
-    touch();
-}
-
 
 WriteMakefile(%$parms);

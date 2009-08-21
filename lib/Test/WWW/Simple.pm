@@ -4,15 +4,16 @@ use 5.6.1;
 use strict;
 use warnings;
 
-our $VERSION = '0.14';
+our $VERSION = '0.16';
 
 use Test::Builder;
 use Test::LongString;
 use Test::More;
-use WWW::Mechanize;
+use WWW::Mechanize::Pluggable;
 
 my $Test = Test::Builder->new;  # The Test:: singleton
-my $Mech = WWW::Mechanize->new; # The Mech user agent and support methods
+my $Mech = WWW::Mechanize::Pluggable->new; 
+                                # The Mech user agent and support methods
 my $cache_results = 0;          # default to not caching Mech fetches
 our $last_url;                  # last URL fetched successfully by Mech
 my %page_cache;                 # saves pages for %%cache; we probably 
@@ -32,6 +33,7 @@ sub import {
     *{$caller.'::user_agent'}  = \&user_agent;
     *{$caller.'::cache'}       = \&cache;
     *{$caller.'::no_cache'}    = \&no_cache;
+    *{$caller.'::mech'}        = \&mech;
 
     $Test->exported_to($caller);
     $Test->plan(@_);
@@ -120,6 +122,11 @@ sub user_agent {
    $Mech->agent_alias($agent);
 }    
 
+sub mech {
+  my ($self) = @_;
+  return $Mech;
+}
+
 1;
 
 __END__
@@ -189,6 +196,12 @@ any transient changes on the pages that are detectable via a refetch.
 Lets you set the current user agent using the C<WWW::Mechanize>
 user-agent abbreviations. See C<WWW::Mechanize> for a list.
 
+=head2 mech
+
+Returns the underlying C<WWW::Mechanize::Pluggable> object to
+allow you to access its other functions. This is here to allow 
+later versions of C<simple_scan> to be able to access them as well.
+
 =head1 SEE ALSO
 
 L<WWW::Mechanize> for a description of how the simulated browser works; 
@@ -198,7 +211,7 @@ You may also want to look at L<Test::WWW::Mechanize> if you want to write
 more precise tests ("is the title of this page like the pattern?" or
 "are all the page links ok?").
 
-The C<simlpe_scan> utility provided with this module demonstrates a
+The C<simple_scan> utility provided with this module demonstrates a
 possible use of C<Test::WWW::Simple>; do a C<perldoc simple_scan> for
 details on this program.
 

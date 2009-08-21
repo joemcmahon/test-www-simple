@@ -1,5 +1,18 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.16  Wed Sep 28 15:25:22 2005 
+	- Switched underlying Mech object to Mech::Pluggable.
+	- Added mech(), for plugin support in future
+	  versions of simple_scan
+        - removed simple_scan to App::SimpleScan
+
+0.15  Fri Sep 23 17:38:13 2005
+	- Added alternate bracketing: <xx> and >xx<
+	  now both work
+	- Added tests to verify that a bug causing 
+	  multiple copies of lines with no substitutions
+	  to be emitted when an "xx" pragma was in force
+
 0.14  Tue Sep 20 17:17:42 2005
 	- updated simple_scan:
 	  - handles flags on regexes

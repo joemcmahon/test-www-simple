@@ -1,5 +1,11 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.08  Mon Feb  1 19:04:34 2005
+        - Further updates to simple_scan
+          -- expanded %%xx pragma support
+          -- automatic embed of source URL in test output
+        - 100% test coverage!
+
 0.07  Fri Jan 28 11:53:07 2005
         - Updates for simple_scan
           -- comments now supported (# in column 1)

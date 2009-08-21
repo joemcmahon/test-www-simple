@@ -4,8 +4,8 @@ use Test::More tests=>1;
 @output = `examples/simple_scan<examples/ss_user_agent.in`;
 @expected = map {"$_\n"} split /\n/,<<EOF;
 1..3
-ok 1 - Perl should be there (Windows IE 6)
-ok 2 - Perl should be there (Mac Safari)
-ok 3 - Perl should be there (Linux Konqueror)
+ok 1 - Perl should be there (Windows IE 6) [http://perl.org/]
+ok 2 - Perl should be there (Mac Safari) [http://perl.org/]
+ok 3 - Perl should be there (Linux Konqueror) [http://perl.org/]
 EOF
 is_deeply(\@output, \@expected, "working output as expected");

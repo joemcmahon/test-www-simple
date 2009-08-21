@@ -25,3 +25,5 @@ t/08ss_agent.t
 t/09ss_comment.t
 t/10ss_blank.t
 t/11ss_garbage.t
+t/12trim.t
+t/13ua.t

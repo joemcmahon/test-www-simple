@@ -4,7 +4,7 @@ use 5.6.1;
 use strict;
 use warnings;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use Test::Builder;
 use Test::LongString;
@@ -60,7 +60,7 @@ sub _trimmed_url {
 }
 
 sub user_agent {
-   my $agent = shift || 'WWW-Mechanize';
+   my $agent = shift || "Windows IE 6";
    $Mech->agent_alias($agent);
 }    
 
@@ -100,6 +100,10 @@ L<Test::Builder> to see how a test module works.
 You may also want to look at L<Test::WWW::Mechanize> if you want to write 
 more precise tests ("is the title of this page like the pattern?" or
 "are all the page links ok?").
+
+The C<simlpe_scan> utility provided with this module demonstrates a
+possible use of C<Test::WWW::Simple>; do a C<perldoc simple_scan> for
+details on this program.
 
 =head1 AUTHOR
 

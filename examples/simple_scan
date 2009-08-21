@@ -4,6 +4,7 @@ use strict;
 use Getopt::Long;
 use Regexp::Common;
 use WWW::Mechanize;
+use Test::WWW::Simple;
 
 use constant SHEBANG => '#!/usr/local/bin/perl -w';
 my($generate, $run);
@@ -32,16 +33,16 @@ while(@lines) {
   # These all start with %% and a pragma name.
 
   # %xx: es de au ..
-  # This pragma lets us define a list of two-character country IDs
+  # This pragma lets us define a list of country IDs
   # to be substituted into the URLs following it. We look for ">xx<"
   # in the URLs to find the characters we'll replace.
   /^%%xx:/ and do {
-    if (/^%%xx: (([a-z1-9]{2}(\s+|$))+)/) {
+    if (/^%%xx: (([a-z1-9]{2,}(\s+|$))+)/) {
       my $countries = $1;
       @countries = split(/\s+/, $countries);
     }
     else {
-      die "Invalid '%%xx:' pragma: must be '%%xx: ' followed by two-character country IDs.\n";
+      die "Invalid '%%xx:' pragma: must be '%%xx: ' followed by two (or more) character country IDs.\n";
     }
     next;
   };
@@ -55,7 +56,7 @@ while(@lines) {
     unless (grep {/$agent/} @aliases) {
       die "$agent is an invalid user agent alias/";
     }
-    push @tests, qq!user_agent("$agent");\n!;
+    push @tests, qq!Test::WWW::Simple::user_agent("$agent");\n!;
     next;
   };
 
@@ -117,6 +118,7 @@ sub emit_a_test {
         (.*)$]x;                              # test comment
 
     @comment = qw(No comment supplied) unless @comment;
+    push @comment, "[$url]" if defined $url;
     next unless defined $url and defined $regex and defined $which;
 
     push @tests, qq!page_@{[$which eq 'Y' ? "" : "un"]}! .

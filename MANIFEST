@@ -1,0 +1,10 @@
+Changes
+MANIFEST
+Makefile.PL
+README
+lib/Test/WWW/Simple.pm
+t/01load.t
+t/02import.t
+t/03like.t
+t/04unlike.t
+t/05pod.t

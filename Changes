@@ -1,0 +1,10 @@
+Revision history for Perl extension Test::WWW::Simple.
+
+0.01  Fri Jan 14 14:31:55 2005
+	- original version; created by h2xs 1.23 with options
+		-AN -n Test::WWW
+
+0.02  Fri Jan 21 14:11:23 2005
+        - updated exaples/simple_scan to use Regexp::Common to 
+          parse URLs and regexes out of input
+

@@ -5,17 +5,18 @@ if( $@ ) {
     plan skip_all => 'HTTP::Daemon unavailable';
 }
 else {
-    plan tests => 6;
+    plan tests => 9;
 }
 
 use Test::WWW::Simple;
 
 $SIG{PIPE} = sub {};
 
-my $pid;
-if ($pid = fork) {
+my $pid = fork;
+if ($pid == 0) {
   my @values = qw(aaaaa bbbbb ccccc ddddd eeeee fffff ggggg);
   my $index = 0;
+  diag "Starting test webserver";
   my $daemon = HTTP::Daemon->new(LocalPort=>9980, ReuseAddr=>1) 
    || die "Bail out! Can't run daemon: $!";
   while (my $connection = $daemon->accept) {
@@ -28,6 +29,8 @@ if ($pid = fork) {
   }
 }
 else {
+  diag "Waiting for test webserver to spin up";
+  sleep 5;
   # actual tests go here
   no_cache;
   page_like('http://localhost:9980', qr/aaaaa/, 'initial value as expected');
@@ -47,6 +50,3 @@ else {
   diag "Shutting down test webserver";
   kill 9,$pid;
 }
-
-
-

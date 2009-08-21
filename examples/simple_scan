@@ -34,9 +34,17 @@ while(@lines) {
 
   # %%cache
   # This pragma tells simple_scan to cache all URLs.
+  /^%%cache/ and do {
+    push @tests, "cache();\n";
+    next;
+  };
 
   # %%nocache
   # This pragma tells simple_scan to not cache URLs.
+  /^%%nocache/ and do {
+    push @tests, "no_cache();\n";
+    next;
+  };
 
   # %xx: es de au ..
   # This pragma lets us define a list of country IDs

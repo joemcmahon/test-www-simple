@@ -4,7 +4,7 @@ use 5.6.1;
 use strict;
 use warnings;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use Test::Builder;
 use Test::LongString;
@@ -14,7 +14,7 @@ use WWW::Mechanize;
 my $Test = Test::Builder->new;  # The Test:: singleton
 my $Mech = WWW::Mechanize->new; # The Mech user agent and support methods
 my $cache_results = 0;          # default to not caching Mech fetches
-our $last_url;                   # last URL fetched successfully by Mech
+our $last_url;                  # last URL fetched successfully by Mech
 my %page_cache;                 # saves pages for %%cache; we probably 
                                 # will want to change this over to a
                                 # tied hash later to allow for disk caching

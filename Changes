@@ -1,5 +1,15 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.11  Mon Apr 18 10:29:33 2005 
+        - added %cache/%nocache pragmas to simple_scan
+        - added tests for cache/nocache in simple_scan
+        - added pause to webserver-based tests to allow it to spin up
+        - refactored page_like/page_unlike shared code
+        - added tests for cache/no_cache import
+        - reworked output check in 06ss_fails.t
+        - updated README to mention simple_scan and caching, and to
+          actually include an accurate version number
+
 0.10  Mon Mar 28 13:52:35 2005
 	- cache/no_cache routines
 

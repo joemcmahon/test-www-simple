@@ -4,7 +4,7 @@ use 5.6.1;
 use strict;
 use warnings;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 use Test::Builder;
 use Test::LongString;
@@ -13,6 +13,13 @@ use WWW::Mechanize;
 
 my $Test = Test::Builder->new;  # The Test:: singleton
 my $Mech = WWW::Mechanize->new; # The Mech user agent and support methods
+my $cache_results = 0;          # default to not caching Mech fetches
+our $last_url;                   # last URL fetched successfully by Mech
+my %page_cache;                 # saves pages for %%cache; we probably 
+                                # will want to change this over to a
+                                # tied hash later to allow for disk caching
+                                # instead of just memory caching.
+my %status_cache;               # ditto
 
 $Test::WWW::display_length = 40; # length for display in error messages
 
@@ -23,6 +30,8 @@ sub import {
     *{$caller.'::page_like'}   = \&page_like;
     *{$caller.'::page_unlike'} = \&page_unlike;
     *{$caller.'::user_agent'}  = \&user_agent;
+    *{$caller.'::cache'}       = \&cache;
+    *{$caller.'::no_cache'}    = \&no_cache;
 
     $Test->exported_to($caller);
     $Test->plan(@_);
@@ -31,25 +40,72 @@ sub import {
     $Mech->agent_alias('Windows IE 6');
 }
 
+sub cache (;$) { 
+  my $comment = shift;
+  $Test->diag($comment) if defined $comment;
+  $last_url = "";
+  $cache_results = 1;
+  1;
+}
+
+sub no_cache (;$) { 
+  my $comment = shift;
+  $Test->diag($comment) if defined $comment;
+  $last_url = "";
+  $cache_results = 0;
+  1;
+}
+
+
 sub page_like($$;$) {
     my($url, $regex, $comment) = @_;
-    _fetch($url) 
-      ? like_string($Mech->content, $regex, $comment)
-      : $Test->diag("Fetch of $url failed: ".$Mech->response->status_line);
+    my ($state, $content, $status_line) = _fetch($url);
+    $state 
+      ? like_string($content, $regex, $comment)
+      : $Test->diag("Fetch of $url failed: ".$status_line);
 }
 
 sub page_unlike($$;$) {
     my($url, $regex, $comment) = @_;
-    _fetch($url) 
-      ? unlike_string($Mech->content, $regex, $comment)
-      : $Test->diag("Fetch of $url failed: ".$Mech->response->status_line);
+    my ($state, $content, $status_line) = _fetch($url);
+    $state 
+      ? unlike_string($content, $regex, $comment)
+      : $Test->diag("Fetch of $url failed: ".$status_line);
 }
 
 sub _fetch {
-    my ($url, $comment) = @_;
-    local $Test::Builder::Level = 2;
-    $Mech->get($url);
-    $Mech->success or undef;
+  my ($url, $comment) = @_;
+  local $Test::Builder::Level = 2;
+  my @results;
+
+  if ($cache_results) {
+    if (defined $page_cache{$url}) {
+      # in cache: return it.
+      @results = (1, $page_cache{$url}, $status_cache{$url});
+    }
+    elsif ($last_url eq $url) {
+      # "cached" in Mech object
+      @results = (1, 
+              $page_cache{$url}   = $Mech->content,
+              $status_cache{$url} = $Mech->response->status_line);
+    }
+    else {
+      # not in cache - load and save the page (if any)
+      $Mech->get($url);
+      @results = ($Mech->success, 
+              $page_cache{$url}   = $Mech->content,
+              $status_cache{$url} = $Mech->response->status_line);
+    }
+  }
+  else {
+   # not caching. Just grab it.
+   $Mech->get($url);
+   @results = ($Mech->success, $Mech->content, $Mech->response->status_line);
+  }
+  $last_url = $_[0];
+  $page_cache{$url}   = $results[1];
+  $status_cache{$url} = $results[2];
+  @results;
 }
 
 sub _trimmed_url {

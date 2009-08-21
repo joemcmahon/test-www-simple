@@ -4,6 +4,7 @@ Makefile.PL
 README
 examples/blankline.in
 examples/simple_scan
+examples/simple_scan2
 examples/ss.in
 examples/ss_blank.in
 examples/ss_comment.in
@@ -27,3 +28,4 @@ t/10ss_blank.t
 t/11ss_garbage.t
 t/12trim.t
 t/13ua.t
+t/14cache.t

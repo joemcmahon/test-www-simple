@@ -32,12 +32,6 @@ while(@lines) {
   # First, look for any of our pragmas.
   # These all start with %% and a pragma name.
 
-  # %%cache
-  # This pragma tells simple_scan to cache all URLs.
-
-  # %%nocache
-  # This pragma tells simple_scan to not cache URLs.
-
   # %xx: es de au ..
   # This pragma lets us define a list of country IDs
   # to be substituted into the URLs following it. We look for ">xx<"
@@ -209,21 +203,6 @@ following. Any arguments aer supplied after a colon, like this:
    %%foo: bar baz
 
 This invokes the C<foo> pragma with the argument C<bar baz>.
-
-=head2 cache
-
-This turns on Test::WWW::Simple's internal URL caching. If you run more than
-one test against a specific URL, Test::WWW::Simple will reuse its 
-internally-saved version of the page instead of refetching it. Useful for speed
-if you know your URLs shouldn't change on refetch, or if you want to "freeze"
-the page for a while to run several different tests on it (for example, to
-check for internal consistency).
-
-=head2 nocache
-
-This is the default; if you reaccess a page, Test::WWW::Simple goes out and
-gets it again. Slower, but if you really expect your page to change when it's
-fetched again and you want this to happen, specify C<%%nocache>.
 
 =head2 xx
 

@@ -1,5 +1,8 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.10  Mon Mar 28 13:52:35 2005
+	- cache/no_cache routines
+
 0.09  Tue Feb  2 10:03:56 2005
         - minor changes to example simple_scan input
 

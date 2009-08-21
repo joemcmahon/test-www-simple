@@ -1,5 +1,9 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.12  Tue Aug 23 15:58:44 2005 
+	- --warn option added (print warnings if any;
+	  off by default)
+
 0.11  Mon Apr 18 10:29:33 2005 
         - added %cache/%nocache pragmas to simple_scan
         - added tests for cache/nocache in simple_scan

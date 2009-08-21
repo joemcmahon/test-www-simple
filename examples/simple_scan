@@ -7,10 +7,11 @@ use WWW::Mechanize;
 use Test::WWW::Simple;
 
 use constant SHEBANG => '#!/usr/local/bin/perl -w';
-my($generate, $run);
+my($generate, $run, $warn);
 
 GetOptions('generate' => \$generate,
-           'run'      => \$run);
+           'run'      => \$run,
+           'warn'     => \$warn);
 
 # Assume run if no flags at all.
 $run++ unless $run or $generate;
@@ -111,7 +112,8 @@ if (defined $number_of_tests) {
   $@ and warn $@,"\n";
 } 
 else {
-  warn "# No tests were found in your input file.\n";
+  warn "# No tests were found in your input file.\n"
+    if $warn;
 }
 
 sub emit_a_test {
@@ -200,6 +202,14 @@ standard output.
 
 This option is useful to build up a test suite to be reused later.
 
+=item C<--warn>
+
+C<--warn> turns on the reporting of minor problems (at present, only
+"there are no tests in your input file"). 
+
+Useful if you're autogenerating tests and want to make sure that
+in fact you did actually generate some.
+
 =back
 
 Both C<-r> and C<-g> can be specified at the same time to run a test and print 
@@ -212,7 +222,7 @@ Pragmas are ways to influence what C<simple_scan> does when generating tests.
 They don't output anything themselves.
 
 Pragmas are specified with C<%%> in column 1 and the pragma name immediately
-following. Any arguments aer supplied after a colon, like this:
+following. Any arguments are supplied after a colon, like this:
 
    %%foo: bar baz
 
@@ -220,8 +230,8 @@ This invokes the C<foo> pragma with the argument C<bar baz>.
 
 =head2 cache
 
-This turns on Test::WWW::Simple's internal URL caching. If you run more than
-one test against a specific URL, Test::WWW::Simple will reuse its 
+This turns on C<Test::WWW::Simple>'s internal URL caching. If you run more than
+one test against a specific URL, C<Test::WWW::Simple> will reuse its 
 internally-saved version of the page instead of refetching it. Useful for speed
 if you know your URLs shouldn't change on refetch, or if you want to "freeze"
 the page for a while to run several different tests on it (for example, to
@@ -229,7 +239,7 @@ check for internal consistency).
 
 =head2 nocache
 
-This is the default; if you reaccess a page, Test::WWW::Simple goes out and
+This is the default; if you reaccess a page, C<Test::WWW::Simple> goes out and
 gets it again. Slower, but if you really expect your page to change when it's
 fetched again and you want this to happen, specify C<%%nocache>.
 

@@ -1,5 +1,19 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.21  Wed Mar  8 12:38:56 PST 2006
+	- add text_like and text_unlike to allow "visual"
+	  page content testing (eliminates markup)
+	- add new tests for text_lie/text_unlike
+	- fix tests looking at python.org (they upgraded
+	  to XHTML)
+	- fix 05a_agent to not use use_ok()
+
+0.20  Fri Jan  6 11:45:43 PST 2006
+	- removed call to agent_alias; setting a default
+	  agent causes problems when testing WAP gateways
+	- cleaned up test webserver code; now cleanly starts
+          on a random port and cleanly shuts down
+
 0.19  Tue Nov 22 14:03:20 2005
 	- Actually export last_test!
 

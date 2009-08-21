@@ -15,9 +15,9 @@ ok($results[1]->{ok}, 'page_like ok as expected');
 is($results[1]->{diag}, '', 'no diagnostic');
 
 # 2. Page not like the regex
-$message1 = qr|         got: "<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Trans"...\n|;
-$message2 = qr|      length: \d+\n|;
-$message3 = qr|    doesn't match '\(\?-xism:Perl\)'\n|;
+$message1 = qr|\s+got: "<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Trans"...\n|;
+$message2 = qr|\s+length: \d+\n|;
+$message3 = qr|\s+doesn't match '\(\?-xism:Perl\)'\n|;
 
 @results = run_tests(
     sub {
@@ -63,7 +63,7 @@ ok($results[1]->{ok}, 'page_like ok as expected');
 is($results[1]->{diag}, '', 'no diagnostic');
 
 # 2. Page not like the regex
-$message1 = qr|                  '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"\n|;
+$message1 = qr|                  '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n|;
 $message2 = qr|.*?|s;
 $message3 = qr|    doesn't match '\(\?-xism:Perl\)'$|;
 

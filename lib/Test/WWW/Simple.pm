@@ -5,7 +5,7 @@ use 5.6.1;
 use strict;
 use warnings;
 
-our $VERSION = '0.19';
+our $VERSION = '0.21';
 
 use Test::Builder;
 use Test::LongString;
@@ -26,11 +26,13 @@ my %status_cache;               # ditto
 $Test::WWW::display_length = 40; # length for display in error messages
 
 sub import {
-    my $self = shift;
+    my ($class, %args) = @_;
     my $caller = caller;
     no strict 'refs';
     *{$caller.'::page_like_full'}   = \&page_like_full;
     *{$caller.'::page_unlike_full'} = \&page_unlike_full;
+    *{$caller.'::text_like'}        = \&text_like;
+    *{$caller.'::text_unlike'}      = \&text_unlike;
     *{$caller.'::page_like'}        = \&page_like;
     *{$caller.'::page_unlike'}      = \&page_unlike;
     *{$caller.'::user_agent'}       = \&user_agent;
@@ -40,10 +42,47 @@ sub import {
     *{$caller.'::last_test'}        = \&last_test;
 
     $Test->exported_to($caller);
-    $Test->plan(@_);
 
-    # Default user agent is IE 6, but it can be switched with user_agent().
-    $Mech->agent_alias('Windows IE 6');
+    # Check the 'use' arguments to see if we have either
+    # 'agent', 'agent_string', or 'no_agent'.  
+    #
+    # If we have none of these, assume 'Windows IE 6'.
+    if (defined $args{'agent'}) {
+      # This is a string suitable for passing to agent_alias.
+      my $alias = $args{'agent'};
+      if (grep { /^$alias\z/ } $Mech->known_agent_aliases()) {
+         $Mech->agent_alias($alias);
+      }
+      else {
+        die "'$alias' is not a valid WWW::Mechanize user agent alias\n";
+      }
+    }
+    elsif (defined $args{'agent_string'}) {
+      $Mech->agent('agent_string');
+    }
+    elsif(!defined $args{'no_agent'}) {
+      $Mech->agent_alias('Windows IE 6');
+    }
+    else {
+      # No action; no_agent was defined,
+      # so leave the user agent as "WWW::Mechanize/version".
+    }
+}
+
+sub text_like($$;$) {
+    my($url, $regex, $comment) = @_;
+    my ($state, $content, $status_line) = _fetch($url);
+    state 
+      ? like_string($Mech->content(format=>'text'), $regex, $comment)
+      : fail "Fetch of $url failed: ".$status_line;
+}
+
+sub text_unlike($$;$) {
+    my($url, $regex, $comment) = @_;
+    my ($state, $content, $status_line) = _fetch($url);
+    $state 
+      ? unlike_string($Mech->content(format=>'text'), $regex, $comment) 
+      : fail "Fetch of $url failed: ".$status_line;
 }
 
 sub page_like($$;$) {
@@ -204,6 +243,18 @@ short diagnostics in case of a match failure.
 Does a pattern match vs. the page at the specified URL and succeeds if
 the pattern does I<not> match. Uses C<Test::LongString> for the 
 comparison to get short diagnostics in case of a match failure.
+
+=head2 text_like
+
+Does a pattern match vs. the I<visible text> on the page and succeeds if
+the pattern matches.  Uses C<Test::LongString> for the comparison to get 
+short diagnostics in case of a match failure.
+
+=head2 text_unlike
+
+Does a pattern match vs. the I<visible text> at the specified URL and succeeds if
+the pattern does I<not> match. Uses C<Test::LongString> for the comparison to get 
+short diagnostics in case of a match failure.
 
 =head2 page_like_full
 

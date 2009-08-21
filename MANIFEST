@@ -8,6 +8,9 @@ t/01load.t
 t/02import.t
 t/03like.t
 t/04unlike.t
+t/05a_agent.t
+t/05agent.t
+t/06liketext.t
 t/12trim.t
 t/13ua.t
 t/14cache.t

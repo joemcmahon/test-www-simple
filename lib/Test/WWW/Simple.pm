@@ -1,10 +1,11 @@
 package Test::WWW::Simple;
 
 use 5.6.1;
+
 use strict;
 use warnings;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 use Test::Builder;
 use Test::LongString;
@@ -71,7 +72,7 @@ sub page_unlike($$;$) {
     my($url, $regex, $comment) = @_;
     my ($state, $content, $status_line) = _fetch($url);
     $state 
-      ? unlike_string($content, $regex, $comment)
+      ? unlike_string($content, $regex, $comment) 
       : $Test->diag("Fetch of $url failed: ".$status_line);
 }
 
@@ -125,6 +126,11 @@ sub user_agent {
 sub mech {
   my ($self) = @_;
   return $Mech;
+}
+
+sub last_test {
+  my($self) = @_;
+  return ($Test->details)[-1];
 }
 
 1;
@@ -201,6 +207,29 @@ user-agent abbreviations. See C<WWW::Mechanize> for a list.
 Returns the underlying C<WWW::Mechanize::Pluggable> object to
 allow you to access its other functions. This is here to allow 
 later versions of C<simple_scan> to be able to access them as well.
+
+=head2 last_test
+
+Returns the details of the last test run. Useful if you want to 
+selectively execute some more code after a test has run (e.g.,
+print the content if a test has failed).
+
+The details are reference to a hash, containing:
+
+=over 4 
+
+=item * ok - true if test is considered a pass
+
+=item * actual_ok  - true if it literally said 'ok'
+
+=item * name - name of the test (if any)
+
+=item * type - type of test (if any)
+
+=item * reason - reason for the above (if any)
+
+=back
+
 
 =head1 SEE ALSO
 

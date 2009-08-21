@@ -1,5 +1,9 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.17  Wed Nov  9 15:33:01 2005 
+	- added last_test, to allow simple_scan plugins to
+	  check the status of the last test.
+
 0.16  Wed Sep 28 15:25:22 2005 
 	- Switched underlying Mech object to Mech::Pluggable.
 	- Added mech(), for plugin support in future

@@ -126,19 +126,39 @@ sub emit_a_test {
     s/>agent</$agent/;
     my($url,   undef, undef, undef, undef, undef, undef, undef,
        undef, undef, $regex, undef, 
+       undef, $switches,
        $which, 
        @comment) =
       m[$RE{URI}{HTTP}{-keep}\s+              # a URL
-        $RE{delimited}{-delim=>'/'}{-keep}\s+ # a regex, in slashes
-        (Y|N)\s+                              # should/shoudn't match
+        $RE{delimited}{-delim=>'/'}{-keep}    # a regex, in slashes
+        (([sixogim]+)\s+|\s+)                 # possibly with switches
+        ([yY]|[nN])\s+                              # should/shoudn't match
         (.*)$]x;                              # test comment
 
-    @comment = qw(No comment supplied) unless @comment;
+    # Clean things up a bit.
+
+    # Make sure the "which" is uppercase for later tests.
+    $which = uc($which);
+
+    # Add url and which way the pattern should match to the comment.
     push @comment, "[$url]" if defined $url;
-    next unless defined $url and defined $regex and defined $which;
+
+    # avoid a warning if the test spec had a syntax error.
+    push @comment, "[/$regex/ " . ($which eq 'Y' ? "should" : "shouldn't") . " match]"
+     if defined $regex and defined $which;
+
+    # Avoid undef warnings if no regex switches were used.
+    $switches = "" unless defined $switches;
+
+    # Warn about possible errors.  
+    unless (defined $url and defined $regex and defined $which) {
+      push @tests, "# $_\n","# Possible syntax error in this test spec\n";
+      warn "$_: syntax error" if $warn;
+      next;
+    }
 
     push @tests, qq!page_@{[$which eq 'Y' ? "" : "un"]}! .
-                 qq!like("$url", qr/$regex/, "@{[join " ",@comment]}");\n!;
+                 qq!like("$url", qr/$regex/$switches, "@{[join " ",@comment]}");\n!;
     $number_of_tests++;
   }
 }

@@ -1,0 +1,120 @@
+#!/usr/local/bin/perl
+use warnings;
+use strict;
+use Getopt::Long;
+use Regexp::Common;
+
+use constant SHEBANG => '#!/usr/local/bin/perl -w';
+my($generate, $run);
+
+GetOptions('generate' => \$generate,
+           'run'      => \$run);
+
+# Assume run if no flags at all.
+$run++ unless $run or $generate;
+
+my @tests;
+while(<>) {
+  chomp;
+
+  # All these extra undefs are the result of using Regexp::Common to 
+  # capture the first two fields. Less confusing and error-prone than
+  # actually coding the regexes oneself.
+  my($url,   undef, undef, undef, undef, undef, undef, undef,
+     undef, undef, $regex, undef, 
+     $which, 
+     @comment) =
+    m[$RE{URI}{HTTP}{-keep}\s+              # a URL
+      $RE{delimited}{-delim=>'/'}{-keep}\s+ # a regex, in slashes
+      (Y|N)\s+                              # should/shoudn't match
+      (.*)$]x;                              # test comment
+
+  @comment = qw(No comment supplied) unless @comment;
+
+  push @tests, qq!page_@{[$which eq 'Y' ? "" : "un"]}! .
+               qq!like("$url", qr/$regex/, "@{[join " ",@comment]}");\n!;
+}
+
+unshift @tests, 
+  "@{[SHEBANG]}\nuse Test::WWW::Simple tests=>@{[int @tests]};\n";
+print @tests if $generate;
+eval(join '',@tests) if $run;
+$@ and warn $@,"\n";
+
+__END__
+
+=head1 NAME
+
+simple_scan - scan a set of Web pages for strings present/absent
+
+=head1 SYNOPSIS
+
+  simple_scan [--generate] [--run] {file file file ...}
+
+=head1 USAGE
+
+  # Run the tests in the files supplied on the command line.
+  # --run (or -run; we're flexible) is assumed if you give no switches.
+  % simple_scan file1 file2 file3
+
+  # Generate a set of tests and save them, then run them.
+  % <complex pipe> | simple_scan --generate > pipe_scan.t
+
+  # Run one simple test
+  % echo "http://yahoo.com yahoo Y Look for yahoo.com"  | simple_scan -run
+
+=head1 DESCRIPTION
+
+C<simple_scan> reads either files supplied on the command line, or standard
+input. It creates and runs, or prints, or even both, a L<Test::WWW::Simple>
+test for the criteria supplied to it.
+
+C<simple_scan>'s input should be in the following format:
+
+  <URL> <pattern> <Y|N> <comment>
+
+The I<URL> is any URL; I<pattern> is a Perl regular expression, delimited by
+slashes; I<Y|N> is C<Y> if the pattern should match, or C<N> if the pattern 
+should B<not> match; and I<comment> is any arbitrary text you like (as long as it's all on the same line as everything else).
+
+=head1 COMMAND-LINE SWITCHES
+
+We use L<Getopt::Long> to get the command-line options, so we're really very
+flexible as to how they're entered. You can use either one dash (as in
+C<-foo>) or two (as in C<--bar>). You only need to enter the minimum number
+or characters to match a given switch.
+
+=over 4
+
+=item C<--run>
+
+C<--run> tells C<simple_scan> to immediately run the tests it's created. Can
+be abbreviated to C<-r>.
+
+This option is mosst useful for one-shot tests that you're not planning to
+run repeatedly.
+
+=item C<--generate>
+
+C<--generate> tells C<simple_scan> to print the test it's generated on the
+standard output.
+
+This option is useful to build up a test suite to be reused later.
+
+=back
+
+Both C<-r> and C<-g> can be specified at the same time to run a test and print 
+it simultaneously; this is useful when you want to save a test to be run later 
+as well as right now without having to regenerate the test.
+
+=head1 AUTHOR
+
+Joe McMahon E<lt>mcmahon@yahoo-inc.comE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (c) 2005 by Yahoo!
+
+This script is free software; you can redistribute it or modify it under the
+same terms as Perl itself, either Perl version 5.6.1 or, at your option, any
+later version of Perl 5 you may have available.

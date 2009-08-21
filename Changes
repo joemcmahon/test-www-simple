@@ -8,3 +8,6 @@ Revision history for Perl extension Test::WWW::Simple.
         - updated exaples/simple_scan to use Regexp::Common to 
           parse URLs and regexes out of input
 
+0.03  Fri Jan 21 17:04:00 2005
+        - added examples/ to MANIFEST (oops)
+

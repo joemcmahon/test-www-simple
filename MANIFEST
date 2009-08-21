@@ -2,6 +2,8 @@ Changes
 MANIFEST
 Makefile.PL
 README
+examples/simple_scan
+examples/ss.in
 lib/Test/WWW/Simple.pm
 t/01load.t
 t/02import.t

@@ -4,7 +4,7 @@ use 5.6.1;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Test::Builder;
 use Test::LongString;

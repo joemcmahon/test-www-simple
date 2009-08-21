@@ -4,7 +4,7 @@ use 5.6.1;
 use strict;
 use warnings;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use Test::Builder;
 use Test::LongString;
@@ -82,7 +82,7 @@ L<Test::Builder> to see how a test module works.
 
 =head1 AUTHOR
 
-Joe McMahon, E<lt>mcmahon@yahoo-inc.com<gt>
+Joe McMahon, E<lt>mcmahon@yahoo-inc.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

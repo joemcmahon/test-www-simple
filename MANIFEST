@@ -18,7 +18,6 @@ t/01load.t
 t/02import.t
 t/03like.t
 t/04unlike.t
-t/05pod.t
 t/06ss_fails.t
 t/06ss_works.t
 t/07ss_intl.t
@@ -30,4 +29,6 @@ t/12trim.t
 t/13ua.t
 t/14cache.t
 t/15ss_cache.t
+t/pod.t
+t/pod-coverage.t
 META.yml                                 Module meta-data (added by MakeMaker)

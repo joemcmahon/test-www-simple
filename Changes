@@ -1,5 +1,9 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.13  Wed Aug 31 16:38:50 2005
+	- updated documentation
+	- standardized pod and pod-coverage tests added
+
 0.12  Tue Aug 23 15:58:44 2005 
 	- --warn option added (print warnings if any;
 	  off by default)

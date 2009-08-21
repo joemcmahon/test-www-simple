@@ -4,7 +4,7 @@ use 5.6.1;
 use strict;
 use warnings;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 use Test::Builder;
 use Test::LongString;
@@ -144,9 +144,50 @@ C<Test::WWW::Simple> is a very basic class for testing Web applications and
 Web pages. It uses L<WWW::Mechanize> to fetch pages, and L<Test::Builder> to 
 implement TAP (Test Anything Protocol) for the actual testing.
 
-Since we use L<Test::Builder> for the C<like> and C<unlike> routines, these
+Since we use L<Test::Builder> for the C<page_like> and C<page_unlike> routines, these
 can be integrated with the other standard L<Test::Builder>-based modules
 as just more tests.
+
+=head1 MOTIVATION
+
+This class provides a really, really simple way to do very basic page validation.
+If you can pattern match it, you can check it. It is therefore not suitable for
+complex page checking (are all my links good? is this page valid XHTML? etc.),
+but work great for those little things (is my copyright notification on the page?
+did I get all of the "font" tagging off this page? etc.).
+
+The function is deliberately limited to make it easier to remember what you 
+can do.
+
+=head1 SUBROUTINES
+
+=head2 page_like
+
+Does a pattern match vs. the page at the specified URL and succeeds if
+the pattern matches.
+
+=head2 page_unlike
+
+Does a pattern match vs. the page at the specified URL and succeeds if
+the pattern does I<not> match.
+
+=head2 cache
+
+Turns cacheing of URLS on. Subsequent requests for the same URL will 
+return the page initially fetched. Can greatly speed up execution in
+cases where the pages are essentially identical (or differ in ways that
+you don't care to test) on every access.
+
+=head2 no_cache
+
+Turns the page cache off. Every request will refetch the page at the
+specified URL. Slows down execution, but guarantees that you are seeing
+any transient changes on the pages that are detectable via a refetch.
+
+=head2 user_agent
+
+Lets you set the current user agent using the C<WWW::Mechanize>
+user-agent abbreviations. See C<WWW::Mechanize> for a list.
 
 =head1 SEE ALSO
 

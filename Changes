@@ -1,20 +1,33 @@
 Revision history for Perl extension Test::WWW::Simple.
 
-0.01  Fri Jan 14 14:31:55 2005
-	- original version; created by h2xs 1.23 with options
-		-AN -n Test::WWW
+0.07  Fri Jan 28 11:53:07 2005
+        - Updates for simple_scan
+          -- comments now supported (# in column 1)
+          -- blank lines now supported (d'oh!)
+          -- garbage lines now silently discarded
+        - Modified logic in page_like/page_unlike to 
+          play properly with Test::Harness; now does
+          either a fail() or the test, depending on whether
+          WWW::Mechanize->get() fails or not.
 
-0.02  Fri Jan 21 14:11:23 2005
-        - updated exaples/simple_scan to use Regexp::Common to 
-          parse URLs and regexes out of input
-
-0.03  Fri Jan 21 17:04:00 2005
-        - added examples/ to MANIFEST (oops)
-
-0.04  Tue Jan 25 09:36:21 2005
-        - added tests for simple_scan examples
+0.06  Thu Jan 27 15:30:45 2005
+        - documented pragmas (but didn't update Changes!)
 
 0.05  Wed Jan 26 15:30:02 2005
         - added %%xx: and %%agent pragmas for simple_scan
         - added tests for these items
         - changed default user agent to 'Windows IE 6'
+
+0.04  Tue Jan 25 09:36:21 2005
+        - added tests for simple_scan examples
+
+0.03  Fri Jan 21 17:04:00 2005
+        - added examples/ to MANIFEST (oops)
+
+0.02  Fri Jan 21 14:11:23 2005
+        - updated exaples/simple_scan to use Regexp::Common to 
+          parse URLs and regexes out of input
+
+0.01  Fri Jan 14 14:31:55 2005
+	- original version; created by h2xs 1.23 with options
+		-AN -n Test::WWW

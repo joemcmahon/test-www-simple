@@ -4,7 +4,7 @@ use 5.6.1;
 use strict;
 use warnings;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use Test::Builder;
 use Test::LongString;
@@ -33,20 +33,23 @@ sub import {
 
 sub page_like($$;$) {
     my($url, $regex, $comment) = @_;
-    _fetch($url) and like_string($Mech->content, $regex, $comment);
+    _fetch($url) 
+      ? like_string($Mech->content, $regex, $comment)
+      : $Test->diag("Fetch of $url failed: ".$Mech->response->status_line);
 }
 
 sub page_unlike($$;$) {
     my($url, $regex, $comment) = @_;
-    _fetch($url) and unlike_string($Mech->content, $regex, $comment);
+    _fetch($url) 
+      ? unlike_string($Mech->content, $regex, $comment)
+      : $Test->diag("Fetch of $url failed: ".$Mech->response->status_line);
 }
 
 sub _fetch {
     my ($url, $comment) = @_;
     local $Test::Builder::Level = 2;
     $Mech->get($url);
-    $Mech->success or 
-        $Test->diag("Fetch of @{[_trimmed_url($url)]} failed: @{[$Mech->response->status_line]}");
+    $Mech->success or undef;
 }
 
 sub _trimmed_url {

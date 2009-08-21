@@ -22,6 +22,11 @@ my @lines = <>;
 while(@lines) {
   $_ = shift @lines;
   chomp;
+  # Discard comments.
+  /^#/ and next;
+
+  # Discard blank lines.
+  /^\s*$/ and next;
 
   # First, look for any of our pragmas.
   # These all start with %% and a pragma name.
@@ -31,7 +36,7 @@ while(@lines) {
   # to be substituted into the URLs following it. We look for ">xx<"
   # in the URLs to find the characters we'll replace.
   /^%%xx:/ and do {
-    if (/^%%xx: (([a-z]{2}(\s+|$))+)/) {
+    if (/^%%xx: (([a-z1-9]{2}(\s+|$))+)/) {
       my $countries = $1;
       @countries = split(/\s+/, $countries);
     }
@@ -83,11 +88,16 @@ while(@lines) {
 
 }
 
-unshift @tests, 
-  "@{[SHEBANG]}\nuse Test::WWW::Simple tests=>$number_of_tests;\n";
-print @tests if $generate;
-eval(join '',@tests) if $run;
-$@ and warn $@,"\n";
+if (defined $number_of_tests) {
+  unshift @tests, 
+    "@{[SHEBANG]}\nuse Test::WWW::Simple tests=>$number_of_tests;\n";
+  print @tests if $generate;
+  eval(join '',@tests) if $run;
+  $@ and warn $@,"\n";
+} 
+else {
+  warn "# No tests were found in your input file.\n";
+}
 
 sub emit_a_test {
   my (@input) = @_;
@@ -107,6 +117,7 @@ sub emit_a_test {
         (.*)$]x;                              # test comment
 
     @comment = qw(No comment supplied) unless @comment;
+    next unless defined $url and defined $regex and defined $which;
 
     push @tests, qq!page_@{[$which eq 'Y' ? "" : "un"]}! .
                  qq!like("$url", qr/$regex/, "@{[join " ",@comment]}");\n!;
@@ -179,7 +190,7 @@ Both C<-r> and C<-g> can be specified at the same time to run a test and print
 it simultaneously; this is useful when you want to save a test to be run later 
 as well as right now without having to regenerate the test.
 
-=head PRAGMAS
+=head1 PRAGMAS
 
 Pragmas are ways to influence what C<simple_scan> does when generating tests.
 They don't output anything themselves.

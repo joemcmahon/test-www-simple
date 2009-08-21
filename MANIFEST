@@ -2,9 +2,16 @@ Changes
 MANIFEST
 Makefile.PL
 README
+examples/blankline.in
 examples/simple_scan
 examples/ss.in
+examples/ss_blank.in
+examples/ss_comment.in
+examples/ss_country.in
 examples/ss_fail.in
+examples/ss_garbage1.in
+examples/ss_garbage2.in
+examples/ss_user_agent.in
 lib/Test/WWW/Simple.pm
 t/01load.t
 t/02import.t
@@ -13,3 +20,8 @@ t/04unlike.t
 t/05pod.t
 t/06ss_fails.t
 t/06ss_works.t
+t/07ss_intl.t
+t/08ss_agent.t
+t/09ss_comment.t
+t/10ss_blank.t
+t/11ss_garbage.t

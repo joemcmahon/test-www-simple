@@ -1,31 +1,64 @@
+use strict;
+BEGIN { 
+  unshift @INC, './t';
+}
+
+my $localdaemon_ok;
+
+BEGIN { 
+  eval "use HTTP::Daemon";
+  $localdaemon_ok = !$@;
+
+  eval "use CGI";
+  $localdaemon_ok &&= !$@;
+}
+
 use Test::Tester;
-use Test::More tests =>8;
+use Test::More tests =>9;
 use Test::WWW::Simple;
+use LocalServer;
 
 my ($message1, $message2, $message3);
 my @results;
 
-# look for perl on perl.org - should succeed
-@results = run_tests(
-    sub {
-          text_like('http://perl.org', qr/Perl 5, Perl 6, Parrot, bugs/, "page match")
-    }
-  );
-ok($results[1]->{ok}, 'text_like ok as expected');
-is($results[1]->{diag}, '', 'no diagnostic');
+my $html = <<HTML;
+<html>
+<head><title>%s</title></head>
+<body>
+Wha<i>t</i>ev<blink>e</blink><b>r</b>.
+</body>
+</html>
+HTML
 
-# 2. Page not like the regex
-$message1 = qr|         got: "The Perl Directory - perl.orgThe Perl Directory at"...\n|;
-$message2 = qr|      length: \d+\n|;
-$message3 = qr|    doesn't match '\(\?-xism:Python\)'\n|;
+SKIP: {
+  skip "Can't run local daemon",5 if ! $localdaemon_ok or $^O eq 'MSWin32';
 
-@results = run_tests(
-    sub {
-        text_like('http://perl.org', qr/Python/, "python found on perl.org")
-    },
-  );
-like($results[1]->{diag}, qr/$message1$message2$message3/, 'message about right');
-ok(!$results[1]->{ok}, 'failed as expected');
+  my $server = LocalServer->spawn( html => $html );
+  isa_ok( $server, "LocalServer" );
+
+  # look for perl on perl.org - should succeed
+  @results = run_tests(
+      sub {
+            text_like($server->url(), qr/Whatever/, "clean text match")
+      }
+    );
+  ok($results[1]->{ok}, 'text_like ok as expected');
+  is($results[1]->{diag}, '', 'no diagnostic');
+
+  # 2. Page not like the regex
+  $message1 = qr|\s+got: "/ Whatever. "\n|;
+  $message2 = qr|\s+length: \d+\n|;
+  $message3 = qr|\s+doesn't match '\(\?-xism:Definite\)'\n|;
+
+  @results = run_tests(
+      sub {
+          text_like($server->url(), qr/Definite/, "Looking for text not there");
+      },
+    );
+  like($results[1]->{diag}, qr/$message1$message2$message3/, 'message about right');
+  ok(!$results[1]->{ok}, 'failed as expected');
+}
+
 
 # 3. invalid server
 @results = run_tests(
@@ -35,7 +68,7 @@ ok(!$results[1]->{ok}, 'failed as expected');
                   "this server doesn't exist")
     },
   );
-is($results[1]->{diag}, '', "match skipped");
+is($results[1]->{diag}, '', "no diag to match");
 ok(!$results[1]->{ok}, 'worked as expected');
 
 
@@ -50,5 +83,5 @@ ok(!$results[1]->{ok}, 'worked as expected');
       ok => 0 # no such page should be a failure
     }
   );
-is($results[1]->{diag}, '', "match skipped");
+is($results[1]->{diag}, '', "No diag to match");
 ok(!$results[1]->{ok}, "worked as expected");

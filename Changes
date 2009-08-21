@@ -1,5 +1,10 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.24   Fri Jun  2 14:03:47 PDT 2006
+	- minor change to test infrastructure: stop depending on
+	  content of live pages, which change all the time; use a
+	  local server (if possible) instead.
+
 0.23   Fri Mar 31 15:04:16 PST 2006
 	- added HTML::TreeBuilder to prereqs (needed
 	  for plaintext stuff)

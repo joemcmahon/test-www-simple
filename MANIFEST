@@ -17,5 +17,7 @@ t/14cache.t
 t/17mech.t
 t/18snap.t
 t/19last_test.t
+t/LocalServer.pm
+t/log-server
 t/pod-coverage.t
 t/pod.t

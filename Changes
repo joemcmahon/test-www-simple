@@ -14,3 +14,7 @@ Revision history for Perl extension Test::WWW::Simple.
 0.04  Tue Jan 25 09:36:21 2005
         - added tests for simple_scan examples
 
+0.05  Wed Jan 26 15:30:02 2005
+        - added %%xx: and %%agent pragmas for simple_scan
+        - added tests for these items
+        - changed default user agent to 'Windows IE 6'

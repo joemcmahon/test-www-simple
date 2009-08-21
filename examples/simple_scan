@@ -3,6 +3,7 @@ use warnings;
 use strict;
 use Getopt::Long;
 use Regexp::Common;
+use WWW::Mechanize;
 
 use constant SHEBANG => '#!/usr/local/bin/perl -w';
 my($generate, $run);
@@ -14,33 +15,104 @@ GetOptions('generate' => \$generate,
 $run++ unless $run or $generate;
 
 my @tests;
-while(<>) {
+my @countries;
+my $agent = "Windows IE 6";
+my $number_of_tests;
+my @lines = <>;
+while(@lines) {
+  $_ = shift @lines;
   chomp;
 
-  # All these extra undefs are the result of using Regexp::Common to 
-  # capture the first two fields. Less confusing and error-prone than
-  # actually coding the regexes oneself.
-  my($url,   undef, undef, undef, undef, undef, undef, undef,
-     undef, undef, $regex, undef, 
-     $which, 
-     @comment) =
-    m[$RE{URI}{HTTP}{-keep}\s+              # a URL
-      $RE{delimited}{-delim=>'/'}{-keep}\s+ # a regex, in slashes
-      (Y|N)\s+                              # should/shoudn't match
-      (.*)$]x;                              # test comment
+  # First, look for any of our pragmas.
+  # These all start with %% and a pragma name.
 
-  @comment = qw(No comment supplied) unless @comment;
+  # %xx: es de au ..
+  # This pragma lets us define a list of two-character country IDs
+  # to be substituted into the URLs following it. We look for ">xx<"
+  # in the URLs to find the characters we'll replace.
+  /^%%xx:/ and do {
+    if (/^%%xx: (([a-z]{2}(\s+|$))+)/) {
+      my $countries = $1;
+      @countries = split(/\s+/, $countries);
+    }
+    else {
+      die "Invalid '%%xx:' pragma: must be '%%xx: ' followed by two-character country IDs.\n";
+    }
+    next;
+  };
 
-  push @tests, qq!page_@{[$which eq 'Y' ? "" : "un"]}! .
-               qq!like("$url", qr/$regex/, "@{[join " ",@comment]}");\n!;
+  # %agent: agent_alias
+  # This pragma tells us to switch the user agent to the one specified.
+  # if it's not a valid user agent, we die.
+  /%%agent: (.*)/ and do {
+    $agent = $1;
+    my @aliases = WWW::Mechanize::known_agent_aliases(); 
+    unless (grep {/$agent/} @aliases) {
+      die "$agent is an invalid user agent alias/";
+    }
+    push @tests, qq!user_agent("$agent");\n!;
+    next;
+  };
+
+  # if an xx: pragma is in effect, substitute the country for ">xx<" 
+  # everywhere in the input record (so we can include the country in the
+  # comment!).
+  if (@countries) {
+    my @localized;
+    for my $country (@countries) {
+      my $localized;
+      # don't create localized tests if the test is not localizable.
+      unless (/>xx</) {
+        emit_a_test($_); 
+        last;
+      }
+      # Localize.
+      ($localized = $_) =~ s/>xx</$country/g;
+      push @localized, $localized;
+    }
+    emit_a_test(@localized);
+
+    # Discard the unlocalized line.
+    next;
+  }
+
+  # No localization in effect. Just make a test.
+  else {
+    emit_a_test($_);
+  }
+
 }
 
 unshift @tests, 
-  "@{[SHEBANG]}\nuse Test::WWW::Simple tests=>@{[int @tests]};\n";
+  "@{[SHEBANG]}\nuse Test::WWW::Simple tests=>$number_of_tests;\n";
 print @tests if $generate;
 eval(join '',@tests) if $run;
 $@ and warn $@,"\n";
 
+sub emit_a_test {
+  my (@input) = @_;
+  # All these extra undefs are the result of using Regexp::Common to 
+  # capture the first two fields. Less confusing and error-prone than
+  # actually coding the regexes oneself.
+  local $_;
+  for (@input) {
+    s/>agent</$agent/;
+    my($url,   undef, undef, undef, undef, undef, undef, undef,
+       undef, undef, $regex, undef, 
+       $which, 
+       @comment) =
+      m[$RE{URI}{HTTP}{-keep}\s+              # a URL
+        $RE{delimited}{-delim=>'/'}{-keep}\s+ # a regex, in slashes
+        (Y|N)\s+                              # should/shoudn't match
+        (.*)$]x;                              # test comment
+
+    @comment = qw(No comment supplied) unless @comment;
+
+    push @tests, qq!page_@{[$which eq 'Y' ? "" : "un"]}! .
+                 qq!like("$url", qr/$regex/, "@{[join " ",@comment]}");\n!;
+    $number_of_tests++;
+  }
+}
 __END__
 
 =head1 NAME

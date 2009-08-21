@@ -36,7 +36,7 @@ ok(!$results[1]->{ok}, 'failed as expected');
     },
   );
 is($results[1]->{diag}, '', "match skipped");
-ok($results[1]->{ok}, 'worked as expected');
+ok(!$results[1]->{ok}, 'worked as expected');
 
 
 # 4. bad page
@@ -51,4 +51,4 @@ ok($results[1]->{ok}, 'worked as expected');
     }
   );
 is($results[1]->{diag}, '', "match skipped");
-ok($results[1]->{ok}, "worked as expected");
+ok(!$results[1]->{ok}, "worked as expected");

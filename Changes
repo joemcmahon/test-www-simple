@@ -1,5 +1,12 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.22   Fri Mar 10 10:25:28 PST 2006
+	- strict error in text_like corrected
+	- corrected sense of OK tests for 404 and 500 server errors
+	  in 06liketext.t
+	- added _clean_text to string \xa0 (non-breaking spaces)
+	  from pages
+
 0.21  Wed Mar  8 12:38:56 PST 2006
 	- add text_like and text_unlike to allow "visual"
 	  page content testing (eliminates markup)

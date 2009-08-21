@@ -5,7 +5,7 @@ use 5.6.1;
 use strict;
 use warnings;
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 use Test::Builder;
 use Test::LongString;
@@ -69,11 +69,17 @@ sub import {
     }
 }
 
+sub _clean_text {
+  my $page = $Mech->content(format=>'text');
+  $page =~ s/\xa0/ /g;
+  return $page;
+}
+
 sub text_like($$;$) {
     my($url, $regex, $comment) = @_;
     my ($state, $content, $status_line) = _fetch($url);
-    state 
-      ? like_string($Mech->content(format=>'text'), $regex, $comment)
+    $state 
+      ? like_string(_clean_text(), $regex, $comment)
       : fail "Fetch of $url failed: ".$status_line;
 }
 
@@ -81,7 +87,7 @@ sub text_unlike($$;$) {
     my($url, $regex, $comment) = @_;
     my ($state, $content, $status_line) = _fetch($url);
     $state 
-      ? unlike_string($Mech->content(format=>'text'), $regex, $comment) 
+      ? unlike_string(_clean_text(), $regex, $comment) 
       : fail "Fetch of $url failed: ".$status_line;
 }
 

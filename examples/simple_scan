@@ -179,6 +179,43 @@ Both C<-r> and C<-g> can be specified at the same time to run a test and print
 it simultaneously; this is useful when you want to save a test to be run later 
 as well as right now without having to regenerate the test.
 
+=head PRAGMAS
+
+Pragmas are ways to influence what C<simple_scan> does when generating tests.
+They don't output anything themselves.
+
+Pragmas are specified with C<%%> in column 1 and the pragma name immediately
+following. Any arguments aer supplied after a colon, like this:
+
+   %%foo: bar baz
+
+This invokes the C<foo> pragma with the argument C<bar baz>.
+
+=head2 xx
+
+The C<xx> pragma allows for very simple-minded internationalization. It assumes
+that you want to substitute each of a list of two-character country codes into
+a string (most likely somewhere in the URL, but possibly in the comment too). 
+C<simple_scan> will do this for you, creating a test for each country code
+you specify. For instance:
+
+   %%xx: es au my jp
+   http://>xx<.mysite.com/     /blargh/  Y  look for blargh (>xx<)
+
+This would generate 4 tests, for C<es.mysite.com>, C<au.mysite.com>, 
+c<my.mysite.com>, and C<jp.mysite.com>, all looking to match C<blargh> 
+somewhere on the page.
+
+=head2 agent
+
+The C<agent> pragma allows you to switch user agents during the test. 
+C<Test::WWW::Simple>'s default is C<Windows IE 6>, but you can switch it
+to any of the other user agents supported by C<WWW::Mechanize>.
+
+   http://gemal.dk/browserspy/basic.html /Explorer/ Y Should be Explorer
+   %%agent: Mac Safari
+   http://gemal.dk/browserspy/basic.html /Safari/ Y Should be Safari
+
 =head1 AUTHOR
 
 Joe McMahon E<lt>mcmahon@yahoo-inc.comE<gt>

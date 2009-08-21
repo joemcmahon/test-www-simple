@@ -6,15 +6,15 @@ my $message;
 my @results;
 
 @results = run_tests(
-    sub { page_unlike('http://perl.org', qr/The Perl Directory/, "page match") },
+    sub { page_unlike('http://use.perl.org', qr/The Perl Directory/, "page match") },
     {
       ok => 0, # we expect the test to fail
       name => "page match",
     },
     "page really is like regex"
   );
-ok(!$results[1]->{ok}, "failed as it should");
-like($results[1]->{diag}, qr/got:.*\n\s+length: \d+\n\s+matches/, 'diagnostic ok');
+ok($results[1]->{ok}, "succeeded as it should");
+is($results[1]->{diag}, '', 'diagnostic ok');
 
 # 2. Page not like the regex
 @results = run_tests(

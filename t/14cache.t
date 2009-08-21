@@ -4,6 +4,9 @@ eval "require HTTP::Daemon";
 if( $@ ) {
     plan skip_all => 'HTTP::Daemon unavailable';
 }
+elsif ( $^O eq 'MSWin32') {
+    plan skip_all => 'Piped open not available';
+}
 else {
     plan tests => 9;
 }
@@ -17,7 +20,7 @@ if ($pid == 0) {
   my @values = qw(aaaaa bbbbb ccccc ddddd eeeee fffff ggggg);
   my $index = 0;
   diag "Starting test webserver";
-  $daemon = HTTP::Daemon->new();
+  $daemon = HTTP::Daemon->new(LocalAddr => '127.0.0.1');
   print STDOUT $daemon->url;
   close STDOUT;
 DAEMON: 

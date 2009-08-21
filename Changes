@@ -1,5 +1,12 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.25   Mon Jun 12 15:57:45 PDT 2006
+	- on some platforms, the cache test faile because
+	  HTTP::Daemon constructs a URI composed of the 
+	  hex representation of the IP address. Caught by
+	  Dave Santo (dhsanto at wildblue dot net). Fixed
+	  to always go to localhost.
+
 0.24   Fri Jun  2 14:03:47 PDT 2006
 	- minor change to test infrastructure: stop depending on
 	  content of live pages, which change all the time; use a

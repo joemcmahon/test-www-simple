@@ -10,14 +10,11 @@ t/03like.t
 t/04unlike.t
 t/05a_agent.t
 t/05agent.t
-t/06liketext.t
 t/12trim.t
 t/13ua.t
 t/14cache.t
 t/17mech.t
 t/18snap.t
 t/19last_test.t
-t/LocalServer.pm
-t/log-server
 t/pod-coverage.t
 t/pod.t

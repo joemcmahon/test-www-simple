@@ -1,5 +1,11 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.23   Fri Mar 31 15:04:16 PST 2006
+	- added HTML::TreeBuilder to prereqs (needed
+	  for plaintext stuff)
+	- fix liketext to not depend on the Python website;
+	  its text gets reworded every fifteen minutes
+
 0.22   Fri Mar 10 10:25:28 PST 2006
 	- strict error in text_like corrected
 	- corrected sense of OK tests for 404 and 500 server errors

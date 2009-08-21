@@ -15,13 +15,13 @@ ok($results[1]->{ok}, 'text_like ok as expected');
 is($results[1]->{diag}, '', 'no diagnostic');
 
 # 2. Page not like the regex
-$message1 = qr|         got: "The Official Python Programming Language Website  "...\n|;
+$message1 = qr|         got: "The Perl Directory - perl.orgThe Perl Directory at"...\n|;
 $message2 = qr|      length: \d+\n|;
-$message3 = qr|    doesn't match '\(\?-xism:Perl\)'\n|;
+$message3 = qr|    doesn't match '\(\?-xism:Python\)'\n|;
 
 @results = run_tests(
     sub {
-        text_like('http://python.org', qr/Perl/, "Perl found on python.org")
+        text_like('http://perl.org', qr/Python/, "python found on perl.org")
     },
   );
 like($results[1]->{diag}, qr/$message1$message2$message3/, 'message about right');

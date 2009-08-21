@@ -1,5 +1,12 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.18  Wed Nov 16 15:10:16 2005 
+	- Changed page_like and page_unlike to actually fail
+	  instead of just issuing a diag when a fetch fails
+	- added page_like_full and page_unlike_full for folks
+	  who actually want to see the entire page source as 
+	  a diag when a test fails
+
 0.17  Wed Nov  9 15:33:01 2005 
 	- added last_test, to allow simple_scan plugins to
 	  check the status of the last test.

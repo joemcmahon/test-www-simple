@@ -5,7 +5,7 @@ use 5.6.1;
 use strict;
 use warnings;
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 use Test::Builder;
 use Test::LongString;
@@ -29,12 +29,14 @@ sub import {
     my $self = shift;
     my $caller = caller;
     no strict 'refs';
-    *{$caller.'::page_like'}   = \&page_like;
-    *{$caller.'::page_unlike'} = \&page_unlike;
-    *{$caller.'::user_agent'}  = \&user_agent;
-    *{$caller.'::cache'}       = \&cache;
-    *{$caller.'::no_cache'}    = \&no_cache;
-    *{$caller.'::mech'}        = \&mech;
+    *{$caller.'::page_like_full'}   = \&page_like_full;
+    *{$caller.'::page_unlike_full'} = \&page_unlike_full;
+    *{$caller.'::page_like'}        = \&page_like;
+    *{$caller.'::page_unlike'}      = \&page_unlike;
+    *{$caller.'::user_agent'}       = \&user_agent;
+    *{$caller.'::cache'}            = \&cache;
+    *{$caller.'::no_cache'}         = \&no_cache;
+    *{$caller.'::mech'}             = \&mech;
 
     $Test->exported_to($caller);
     $Test->plan(@_);
@@ -43,29 +45,12 @@ sub import {
     $Mech->agent_alias('Windows IE 6');
 }
 
-sub cache (;$) { 
-  my $comment = shift;
-  $Test->diag($comment) if defined $comment;
-  $last_url = "";
-  $cache_results = 1;
-  1;
-}
-
-sub no_cache (;$) { 
-  my $comment = shift;
-  $Test->diag($comment) if defined $comment;
-  $last_url = "";
-  $cache_results = 0;
-  1;
-}
-
-
 sub page_like($$;$) {
     my($url, $regex, $comment) = @_;
     my ($state, $content, $status_line) = _fetch($url);
     $state 
       ? like_string($content, $regex, $comment)
-      : $Test->diag("Fetch of $url failed: ".$status_line);
+      : fail "Fetch of $url failed: ".$status_line;
 }
 
 sub page_unlike($$;$) {
@@ -73,7 +58,23 @@ sub page_unlike($$;$) {
     my ($state, $content, $status_line) = _fetch($url);
     $state 
       ? unlike_string($content, $regex, $comment) 
-      : $Test->diag("Fetch of $url failed: ".$status_line);
+      : fail "Fetch of $url failed: ".$status_line;
+}
+
+sub page_like_full($$;$) {
+    my($url, $regex, $comment) = @_;
+    my ($state, $content, $status_line) = _fetch($url);
+    $state 
+      ? like($content, $regex, $comment)
+      : fail "Fetch of $url failed: ".$status_line;
+}
+
+sub page_unlike_full($$;$) {
+    my($url, $regex, $comment) = @_;
+    my ($state, $content, $status_line) = _fetch($url);
+    $state 
+      ? unlike($content, $regex, $comment) 
+      : fail "Fetch of $url failed: ".$status_line;
 }
 
 sub _fetch {
@@ -133,6 +134,23 @@ sub last_test {
   return ($Test->details)[-1];
 }
 
+sub cache (;$) { 
+  my $comment = shift;
+  $Test->diag($comment) if defined $comment;
+  $last_url = "";
+  $cache_results = 1;
+  1;
+}
+
+sub no_cache (;$) { 
+  my $comment = shift;
+  $Test->diag($comment) if defined $comment;
+  $last_url = "";
+  $cache_results = 0;
+  1;
+}
+
+
 1;
 
 __END__
@@ -177,12 +195,26 @@ can do.
 =head2 page_like
 
 Does a pattern match vs. the page at the specified URL and succeeds if
-the pattern matches.
+the pattern matches.  Uses C<Test::LongString> for the comparison to get 
+short diagnostics in case of a match failure.
 
 =head2 page_unlike
 
 Does a pattern match vs. the page at the specified URL and succeeds if
-the pattern does I<not> match.
+the pattern does I<not> match. Uses C<Test::LongString> for the 
+comparison to get short diagnostics in case of a match failure.
+
+=head2 page_like_full
+
+Does a pattern match vs. the page at the specified URL and succeeds if
+the pattern matches. Uses C<Test::More> to get a complete dump of the page
+if the comparison fails.
+
+=head2 page_unlike_full
+
+Does a pattern match vs. the page at the specified URL and succeeds if
+the pattern does I<not> match. Uses C<Test::More> to get a complete dump 
+of the page if the comparison fails.
 
 =head2 cache
 

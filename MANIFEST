@@ -1,8 +1,8 @@
 Changes
 lib/Test/WWW/Simple.pm
 Makefile.PL
-META.yml
 MANIFEST			This list of files
+META.yml
 README
 t/01load.t
 t/02import.t
@@ -13,5 +13,6 @@ t/13ua.t
 t/14cache.t
 t/17mech.t
 t/18snap.t
+t/19last_test.t
 t/pod-coverage.t
 t/pod.t

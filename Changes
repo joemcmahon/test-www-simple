@@ -1,5 +1,8 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.19  Tue Nov 22 14:03:20 2005
+	- Actually export last_test!
+
 0.18  Wed Nov 16 15:10:16 2005 
 	- Changed page_like and page_unlike to actually fail
 	  instead of just issuing a diag when a fetch fails

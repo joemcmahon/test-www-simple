@@ -5,7 +5,7 @@ use 5.6.1;
 use strict;
 use warnings;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 use Test::Builder;
 use Test::LongString;
@@ -37,6 +37,7 @@ sub import {
     *{$caller.'::cache'}            = \&cache;
     *{$caller.'::no_cache'}         = \&no_cache;
     *{$caller.'::mech'}             = \&mech;
+    *{$caller.'::last_test'}        = \&last_test;
 
     $Test->exported_to($caller);
     $Test->plan(@_);

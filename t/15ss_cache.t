@@ -1,53 +1,43 @@
 #!/usr/local/bin/perl
 use Test::More;
-
-eval "require HTTP::Daemon";
-if( $@ ) {
-    plan skip_all => 'HTTP::Daemon unavailable';
-}
-else {
-    plan tests => 1;
-}
+plan tests => 1;
 
 use Test::WWW::Simple;
+use Mojolicious::Lite;
 
 $SIG{PIPE} = sub {};
+$ENV{MOJO_LOG_LEVEL} = 'error';
 
 my $pid = fork;
-
 if ($pid == 0) {
+  diag "starting server";
   my @values = qw(aaaaa bbbbb ccccc ddddd eeeee fffff ggggg);
-  my $index = 0;
-  diag "Starting test webserver";
-  my $daemon = HTTP::Daemon->new(LocalPort=>9981, ReuseAddr=>1) 
-   || die "Bail out! Can't run daemon: $!";
-  while (my $connection = $daemon->accept) {
-    while (my $request = $connection->get_request) {
-      $connection->send_response($values[$index]);
-      $index++;
-    }
-    $connection ->close;
-    undef $connection;
-  }
+  get "/"     => sub { shift->render_text(shift @values) };
+  get "/stop" => sub { shift->render_text("ok!"); kill 9,$$ };
+  shagadelic('daemon');
 }
 else {
   diag "Waiting for test webserver to spin up";
   sleep 5;
   # actual tests go here
-  @output = `perl -Iblib/lib examples/simple_scan<examples/ss_cache.in`;
-  @expected = map {"$_\n"} split /\n/,<<EOF;
-1..7
-ok 1 - initial value OK [http://localhost:9981/]
-ok 2 - reaccessed as expected [http://localhost:9981/]
-ok 3 - cached from last get [http://localhost:9981/]
-ok 4 - still cached [http://localhost:9981/]
-ok 5 - reaccessed as expected [http://localhost:9981/]
-ok 6 - return to last cached value [http://localhost:9981/]
-ok 7 - now a new value [http://localhost:9981/]
+  my @output = `perl -Iblib/lib examples/simple_scan<examples/ss_cache.in`;
+  my @expected = map {"$_\n"} split /\n/,<<EOF;
+1..9
+ok 1 - initial value OK [http://localhost:3000/] [/aaaaa/ should match]
+ok 2 - reaccessed as expected [http://localhost:3000/] [/bbbbb/ should match]
+ok 3 - intervening page [http://perl.org/] [/perl/ should match]
+ok 4 - cached from last get [http://localhost:3000/] [/bbbbb/ should match]
+ok 5 - still cached [http://localhost:3000/] [/bbbbb/ should match]
+ok 6 - reaccessed as expected [http://localhost:3000/] [/ccccc/ should match]
+ok 7 - intervening page [http://perl.org/] [/perl/ should match]
+ok 8 - return to last cached value [http://localhost:3000/] [/ccccc/ should match]
+ok 9 - now a new value [http://localhost:3000/] [/ddddd/ should match]
+
 EOF
   is_deeply(\@output, \@expected, "working output as expected");
 
   # shut down webserver
   diag "Shutting down test webserver";
-  kill 9,$pid;
+  my $mech = WWW::Mechanize->new(autocheck=>0, timeout=>2);
+  $mech->get('http://localhost:3000/stop');
 }

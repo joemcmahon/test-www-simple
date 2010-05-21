@@ -1,7 +1,12 @@
 #!/usr/local/bin/perl
 use Test::More tests=>7;
+use FindBin;
+use File::Temp qw(tempfile);
 
-@output = `examples/simple_scan<examples/ss_fail.in 2>tmp.out`;
+my (undef, $filename) = tempfile; 
+defined $filename or die "Can't open file to save STDERR: $!\n";
+
+@output = `$^X -I$FindBin::Bin/../blib/lib $FindBin::Bin/../examples/simple_scan<examples/ss_fail.in 2>$filename`;
 @expected = map {"$_\n"} split /\n/,<<EOF;
 1..4
 not ok 1 - No python on perl.org [http://perl.org/] [/python/ should match]
@@ -11,7 +16,7 @@ not ok 4 - Perl on perl.org [http://perl.org/] [/perl/ shouldn't match]
 EOF
 is_deeply(\@output, \@expected, "failed STDOUT as expected");
 
-open(PRODUCED_STDERR, "tmp.out") or die "Can't open saved STDERR: $!\n";
+open PRODUCED_STDERR, "<", $filename;
 @output = <PRODUCED_STDERR>;
 @expected = map {"$_\n"} split /\n/, <<EOF;
 
@@ -43,4 +48,4 @@ is int(grep {/got:/} @output), 4, "right number of 'got' lines";
 is int(grep {/length: /} @output), 4, "right number of 'length' lines";
 is int(grep {/doesn't match '\(\?-xism:/} @output), 2, "right number of 'doesn't match' lines";
 is int (grep {/matches '\(\?-xism:/} @output), 2, "right number of 'matches' lines";
-unlink "tmp.out";
+unlink $filename;

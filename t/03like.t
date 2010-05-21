@@ -8,7 +8,7 @@ my @results;
 # look for perl on perl.org - should succeed
 @results = run_tests(
     sub {
-          page_like('http://perl.org', qr/The Perl Directory/, "page match")
+          page_like('http://perl.org', qr/The Perl Programming Language - www.perl.org/, "page match")
     }
   );
 ok($results[1]->{ok}, 'page_like ok as expected');
@@ -56,7 +56,7 @@ ok(!$results[1]->{ok}, "failed as expected");
 # look for perl on perl.org - should succeed
 @results = run_tests(
     sub {
-          page_like_full('http://perl.org', qr/The Perl Directory/, "page match")
+          page_like_full('http://perl.org', qr/The Perl Programming Language at Perl.org./, "page match")
     }
   );
 ok($results[1]->{ok}, 'page_like ok as expected');

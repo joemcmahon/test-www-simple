@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl
+#!/usr/bin/env perl
 use warnings;
 use strict;
 use Getopt::Long;
@@ -6,7 +6,7 @@ use Regexp::Common;
 use WWW::Mechanize;
 use Test::WWW::Simple;
 
-use constant SHEBANG => '#!/usr/local/bin/perl -w';
+use constant SHEBANG => '#!/usr/bin/env perl';
 my($generate, $run);
 
 GetOptions('generate' => \$generate,

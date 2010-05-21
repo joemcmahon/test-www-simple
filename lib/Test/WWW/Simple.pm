@@ -13,7 +13,7 @@ use Test::More;
 use WWW::Mechanize::Pluggable;
 
 my $Test = Test::Builder->new;  # The Test:: singleton
-my $Mech = WWW::Mechanize::Pluggable->new; 
+my $Mech = WWW::Mechanize::Pluggable->new(autocheck => 0); 
                                 # The Mech user agent and support methods
 my $cache_results = 0;          # default to not caching Mech fetches
 our $last_url;                  # last URL fetched successfully by Mech
@@ -47,9 +47,9 @@ sub import {
     # 'agent', 'agent_string', or 'no_agent'.  
     #
     # If we have none of these, assume 'Windows IE 6'.
-    if (defined $args{'agent'}) {
+    if (defined $args{agent}) {
       # This is a string suitable for passing to agent_alias.
-      my $alias = $args{'agent'};
+      my $alias = $args{agent};
       if (grep { /^$alias\z/ } $Mech->known_agent_aliases()) {
          $Mech->agent_alias($alias);
       }
@@ -57,15 +57,19 @@ sub import {
         die "'$alias' is not a valid WWW::Mechanize user agent alias\n";
       }
     }
-    elsif (defined $args{'agent_string'}) {
+    elsif (defined $args{agent_string}) {
       $Mech->agent('agent_string');
     }
-    elsif(!defined $args{'no_agent'}) {
+    elsif(!defined $args{no_agent}) {
       $Mech->agent_alias('Windows IE 6');
     }
     else {
       # No action; no_agent was defined,
       # so leave the user agent as "WWW::Mechanize/version".
+    }
+
+    if (defined $args{tests}) {
+      plan tests => $args{tests};
     }
 }
 

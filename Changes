@@ -1,5 +1,10 @@
 Revision history for Perl extension Test::WWW::Simple.
 
+0.29   Fri May 21 17:03:55 PDT 2010
+	- Fix numerous failing tests.
+	- Make sure all tests are in the MANIFEST.
+	- Start converting webserver-based tests to Mojo.
+
 0.28   Wed Dec 17 13:34:53 PST 2008
 	- Corrected prereqs (HTML::Tree, not TreeBuilder)
 

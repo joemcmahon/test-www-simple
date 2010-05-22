@@ -10,10 +10,14 @@ $ENV{MOJO_LOG_LEVEL} = 'error';
 
 my $pid = fork;
 if ($pid == 0) {
-  diag "starting server";
+  diag "starting Mojolicious server";
   my @values = qw(aaaaa bbbbb ccccc ddddd eeeee fffff ggggg);
   get "/"     => sub { shift->render_text(shift @values) };
-  get "/stop" => sub { shift->render_text("ok!"); kill 9,$$ };
+  get "/stop" => sub { 
+    shift->render_text("ok!"); 
+    diag 'stopping Mojolicious server';
+    kill 9,$$ 
+  };
   shagadelic('daemon');
 }
 else {

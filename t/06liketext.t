@@ -17,6 +17,13 @@ use Test::Tester;
 use Test::More tests =>9;
 use Test::WWW::Simple;
 use LocalServer;
+use WWW::Mechanize;
+
+# Skip 'not-found' tests if DNSAdvantage is 'helping'. :P
+my $mech = WWW::Mechanize->new( autocheck => 0 );
+$mech->get('http://completely-bogus-fehferuin-doesnt-exist.me');
+my $dns_disadvantage =
+  $mech->success and $mech->content =~ /search.dnsadvantage.com/ms;
 
 my ($message1, $message2, $message3);
 my @results;
@@ -61,6 +68,9 @@ SKIP: {
 
 
 # 3. invalid server
+SKIP: {
+  skip "DNSAdvantage messes up nonexistent server tests", 2 
+    if $dns_disadvantage;
 @results = run_tests(
     sub {
         text_like("http://switch-to-python.perl.org", 
@@ -70,6 +80,7 @@ SKIP: {
   );
 is($results[1]->{diag}, '', "no diag to match");
 ok(!$results[1]->{ok}, 'worked as expected');
+}
 
 
 # 4. bad page

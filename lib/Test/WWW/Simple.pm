@@ -1,7 +1,5 @@
 package Test::WWW::Simple;
 
-use 5.6.1;
-
 use strict;
 use warnings;
 

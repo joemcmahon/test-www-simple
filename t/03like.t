@@ -1,6 +1,13 @@
 use Test::Tester;
 use Test::More tests =>16;
 use Test::WWW::Simple;
+use WWW::Mechanize;
+
+# Skip 'not-found' tests if DNSAdvantage is 'helping'. :P
+my $mech = WWW::Mechanize->new( autocheck => 0 );
+$mech->get('http://completely-bogus-fehferuin-doesnt-exist.me');
+my $dns_disadvantage = 
+  $mech->success and $mech->content =~ /search.dnsadvantage.com/ms;
 
 my ($message1, $message2, $message3);
 my @results;
@@ -28,6 +35,10 @@ like($results[1]->{diag}, qr/$message1$message2$message3/, 'message about right'
 ok(!$results[1]->{ok}, 'failed as expected');
 
 # 3. invalid server
+SKIP: {
+  skip "DNSAdvantage causes non-existent server tests to fail",2
+    if $dns_disadvantage;
+
 @results = run_tests(
     sub {
         page_like("http://switch-to-python.perl.org", 
@@ -37,7 +48,7 @@ ok(!$results[1]->{ok}, 'failed as expected');
   );
 is($results[1]->{diag}, '', "match skipped");
 ok(!$results[1]->{ok}, 'failed as expected');
-
+}
 
 # 4. bad page
 @results = run_tests(
@@ -76,6 +87,9 @@ like($results[1]->{diag}, qr/$message1$message2$message3/, 'message about right'
 ok(!$results[1]->{ok}, 'failed as expected');
 
 # 3. invalid server
+SKIP: {
+  skip "DNSAdvantage causes nonexistent server tests to fail", 2
+    if $dns_disadvantage;
 @results = run_tests(
     sub {
         page_like_full("http://switch-to-python.perl.org",
@@ -85,6 +99,7 @@ ok(!$results[1]->{ok}, 'failed as expected');
   );
 is($results[1]->{diag}, '', "match skipped");
 ok(!$results[1]->{ok}, 'failed as expected');
+}
 
 
 # 4. bad page

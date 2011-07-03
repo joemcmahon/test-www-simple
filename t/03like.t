@@ -34,14 +34,14 @@ ok($results[1]->{ok}, 'page_like ok as expected');
 is($results[1]->{diag}, '', 'no diagnostic');
 
 # 2. Page not like the regex
-$message3 = qr|\Qdoesn't match '(?^:Perl)'\E|;
+$message3 = qr|doesn't match '\(\?.*?Perl\)'|;
 
 @results = run_tests(
     sub {
         page_like('http://python.org', qr/Perl/, "Perl found on python.org")
     },
   );
-like($results[1]->{diag}, qr/$message3/, 'message about right');
+like($results[1]->{diag}, qr/$message3/sm, 'message about right');
 ok(!$results[1]->{ok}, 'failed as expected');
 
 # 3. invalid server
@@ -84,14 +84,14 @@ ok($results[1]->{ok}, 'page_like ok as expected');
 is($results[1]->{diag}, '', 'no diagnostic');
 
 # 2. Page not like the regex
-$message3 = qr|\Qdoesn't match '(?^:Perl)'\E$|;
+$message3 = qr|doesn't match '\(\?.*?Perl\)'$|;
 
 @results = run_tests(
     sub {
         page_like_full('http://python.org', qr/Perl/, "Perl found on python.org")
     },
   );
-like($results[1]->{diag}, qr/$message3/, 'message about right');
+like($results[1]->{diag}, qr/$message3/sm, 'message about right');
 ok(!$results[1]->{ok}, 'failed as expected');
 
 # 3. invalid server

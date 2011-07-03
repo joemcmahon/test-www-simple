@@ -1,4 +1,12 @@
 Revision history for Perl extension Test::WWW::Simple.
+0.32   Sun Jul  3 13:30:16 PDT 2011
+	- Fix regex-to-regex matches that are inconsistent across Perl versions
+
+0.31   Wed Mar  9 17:36:31 PST 2011
+       - added explicit prereq of WWW::Mechanize::Pluggable
+
+0.30   Wed Mar  9 00:15:58 PST 2011
+       - Added DNSAdvantage test exceptions for CPAN testers on Comcast.
 
 0.29   Fri May 21 17:03:55 PDT 2010
 	- Fix numerous failing tests.

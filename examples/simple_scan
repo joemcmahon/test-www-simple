@@ -138,7 +138,7 @@ sub emit_a_test {
     # Clean things up a bit.
 
     # Make sure the "which" is uppercase for later tests.
-    $which = uc($which);
+    $which = uc($which) if defined $which;
 
     # Add url and which way the pattern should match to the comment.
     push @comment, "[$url]" if defined $url;

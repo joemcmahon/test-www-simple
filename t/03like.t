@@ -3,11 +3,23 @@ use Test::More tests =>16;
 use Test::WWW::Simple;
 use WWW::Mechanize;
 
+
 # Skip 'not-found' tests if DNSAdvantage is 'helping'. :P
-my $mech = WWW::Mechanize->new( autocheck => 0 );
-$mech->get('http://completely-bogus-fehferuin-doesnt-exist.me');
-my $dns_disadvantage = 
-  $mech->success and $mech->content =~ /search.dnsadvantage.com/ms;
+my $ua = LWP::UserAgent->new;
+$ua->agent("MyApp/0.1 ");
+
+# Create a request
+my $req = HTTP::Request->new(POST => 'http://nfrenjfirefreknfjnr.com/no-exist.
+html');
+$req->content_type('application/x-www-form-urlencoded');
+$req->content('query=libwww-perl&mode=dist');
+
+# Pass request to the user agent and get a response back
+my $res = $ua->request($req);
+
+# Check the outcome of the response
+my $dns_disadvantage = ($res->code != 404);
+  
 
 my ($message1, $message2, $message3);
 my @results;
@@ -22,16 +34,14 @@ ok($results[1]->{ok}, 'page_like ok as expected');
 is($results[1]->{diag}, '', 'no diagnostic');
 
 # 2. Page not like the regex
-$message1 = qr|\s+got: "<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Trans"...\n|;
-$message2 = qr|\s+length: \d+\n|;
-$message3 = qr|\s+doesn't match '\(\?-xism:Perl\)'\n|;
+$message3 = qr|\Qdoesn't match '(?^:Perl)'\E|;
 
 @results = run_tests(
     sub {
         page_like('http://python.org', qr/Perl/, "Perl found on python.org")
     },
   );
-like($results[1]->{diag}, qr/$message1$message2$message3/, 'message about right');
+like($results[1]->{diag}, qr/$message3/, 'message about right');
 ok(!$results[1]->{ok}, 'failed as expected');
 
 # 3. invalid server
@@ -74,16 +84,14 @@ ok($results[1]->{ok}, 'page_like ok as expected');
 is($results[1]->{diag}, '', 'no diagnostic');
 
 # 2. Page not like the regex
-$message1 = qr|                  '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n|;
-$message2 = qr|.*?|s;
-$message3 = qr|    doesn't match '\(\?-xism:Perl\)'$|;
+$message3 = qr|\Qdoesn't match '(?^:Perl)'\E$|;
 
 @results = run_tests(
     sub {
         page_like_full('http://python.org', qr/Perl/, "Perl found on python.org")
     },
   );
-like($results[1]->{diag}, qr/$message1$message2$message3/, 'message about right');
+like($results[1]->{diag}, qr/$message3/, 'message about right');
 ok(!$results[1]->{ok}, 'failed as expected');
 
 # 3. invalid server

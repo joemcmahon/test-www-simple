@@ -14,7 +14,7 @@ BEGIN {
 }
 
 use Test::Tester;
-use Test::More tests =>9;
+use Test::More tests =>11;
 use Test::WWW::Simple;
 use LocalServer;
 use WWW::Mechanize;
@@ -55,14 +55,16 @@ SKIP: {
   # 2. Page not like the regex
   $message1 = qr|\s+got: "/ Whatever. "\n|;
   $message2 = qr|\s+length: \d+\n|;
-  $message3 = qr|\s+doesn't match '\(\?-xism:Definite\)'\n|;
+  $message3 = qr|\s+doesn't match .*?Definite|;
 
   @results = run_tests(
       sub {
           text_like($server->url(), qr/Definite/, "Looking for text not there");
       },
     );
-  like($results[1]->{diag}, qr/$message1$message2$message3/, 'message about right');
+  like($results[1]->{diag}, qr/$message1/, 'message about right');
+  like($results[1]->{diag}, qr/$message2/, 'message about right');
+  like($results[1]->{diag}, qr/$message3/, 'message about right');
   ok(!$results[1]->{ok}, 'failed as expected');
 }
 

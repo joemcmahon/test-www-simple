@@ -46,6 +46,6 @@ is($expected[-1], $output[-1], "summary right");
 is int(grep {/Failed/} @output), 4, "right number of failures";
 is int(grep {/got:/} @output), 4, "right number of 'got' lines";
 is int(grep {/length: /} @output), 4, "right number of 'length' lines";
-is int(grep {/doesn't match '\(\?-xism:/} @output), 2, "right number of 'doesn't match' lines";
-is int (grep {/matches '\(\?-xism:/} @output), 2, "right number of 'matches' lines";
+is int(grep {/doesn't match/} @output), 2, "right number of 'doesn't match' lines";
+is int (grep {/matches/} @output), 2, "right number of 'matches' lines";
 unlink $filename;

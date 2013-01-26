@@ -18,7 +18,7 @@ if ($pid == 0) {
     diag 'stopping Mojolicious server';
     kill 9,$$ 
   };
-  shagadelic('daemon');
+  app->start('daemon');
 }
 else {
   diag "Waiting for test webserver to spin up";

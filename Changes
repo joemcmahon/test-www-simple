@@ -1,7 +1,9 @@
 Revision history for Perl extension Test::WWW::Simple.
-0.33   Fri Jan 25 19:11:49 PST 2013
+0.34   Fri Jan 25 19:11:49 PST 2013
     - update Mojolicious::Lite invocation to match current Mojolicious.
     - proper Meta.yml for CPANTS
+0.33   Mon Jul 11 12:53:17 PDT 2011
+    - added Makefile.PL check for installations with bad HTML/Parser.so
 0.32   Sun Jul  3 13:30:16 PDT 2011
 	- Fix regex-to-regex matches that are inconsistent across Perl versions
 

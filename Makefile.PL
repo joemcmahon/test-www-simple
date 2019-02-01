@@ -10,7 +10,7 @@ if ($@ and $@ =~ /Can't load .*\/Parser\.so/) {
     exit 2;
 }
 
-my $parms = 
+my $parms =
   {
     NAME              => 'Test::WWW::Simple',
     VERSION_FROM      => 'lib/Test/WWW/Simple.pm', # finds $VERSION
@@ -21,7 +21,7 @@ my $parms =
                           'WWW::Mechanize' => 0,
                           'WWW::Mechanize::Pluggable' => 1.07,
                           'Regexp::Common' => 0,
-                          'Mojolicious::Lite' => 0,
+                          'Mojolicious' => 8.11,   # last version successfully tested
                          }, # e.g., Module::Name => 1.1
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Test/WWW/Simple.pm', # retrieve abstract from module

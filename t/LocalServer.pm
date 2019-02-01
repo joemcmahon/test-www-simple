@@ -81,7 +81,7 @@ sub spawn {
   $lhurl->host( "localhost" );
   $self->{_server_url} = $lhurl;
 
-  diag "Started $lhurl";
+  note "Started $lhurl";
 
   $self;
 };

@@ -19,41 +19,41 @@ my $pid = open($child, "-|");
 if ($pid == 0) {
   my @values = qw(aaaaa bbbbb ccccc ddddd eeeee fffff ggggg);
   my $index = 0;
-  diag "Starting test webserver";
+  note "Starting test webserver";
   $daemon = HTTP::Daemon->new(LocalAddr => '127.0.0.1');
   print STDOUT $daemon->url;
   close STDOUT;
-DAEMON: 
+DAEMON:
   while (my $connection = $daemon->accept) {
     while (my $request = $connection->get_request) {
-      last DAEMON if ($request->uri->as_string =~ /stop/); 
+      last DAEMON if ($request->uri->as_string =~ /stop/);
       $connection->send_response($values[$index]);
       $index++;
     }
     $connection ->close;
     undef $connection;
   }
-  diag "daemon stopped";
+  note "daemon stopped";
 }
 else {
   chomp(my $url = <$child>);
-  diag "Webserver up on $url";
+  note "Webserver up on $url";
   # actual tests go here
-  no_cache;
+  no_cache "start without cache";
   page_like($url, qr/aaaaa/, 'initial value as expected');
   page_like($url, qr/bbbbb/, 'reaccessed as expected');
-  cache;
+  cache "turn cache on";
   page_like('http://perl.org', qr/perl/i,   'intervening page');
   page_like($url, qr/bbbbb/, 'cached from last get');
   page_like($url, qr/bbbbb/, 'remains cached');
-  no_cache "turned off again";
+  no_cache "turn back off";
   page_like($url, qr/ccccc/, 'reaccessed again as expected');
   page_like('http://perl.org', qr/perl/i,   'intervening page');
-  cache "back on again";
+  cache "turn back on";
   page_like($url, qr/ccccc/, 'return to last cached value');
-  no_cache;
+  no_cache "turn back off";
   page_like($url, qr/ddddd/, 'now a new value');
-  
-  diag "Shutting down test webserver";
+
+  note "Shutting down test webserver";
   mech->get($url . "/stop");
 }

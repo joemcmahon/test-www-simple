@@ -9,7 +9,6 @@ t/03like.t
 t/04unlike.t
 t/05a_agent.t
 t/05agent.t
-t/05pod.t
 t/06liketext.t
 t/06ss_fails.t
 t/06ss_works.t
@@ -43,3 +42,6 @@ examples/ss_garbage1.in
 examples/ss_garbage2.in
 examples/ss_user_agent.in
 lib/Test/WWW/Simple.pm
+xt/pod.t
+xt/pod_coverage.t
+META.json

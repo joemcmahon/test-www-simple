@@ -13,7 +13,7 @@ my $message;
 my @results;
 
 @results = run_tests(
-    sub { page_unlike('http://use.perl.org', qr/The Perl Directory/, "page match") },
+    sub { page_unlike('http://google.com', qr/The Perl Directory/, "page match") },
     {
       ok => 0, # we expect the test to fail
       name => "page match",
@@ -40,7 +40,7 @@ SKIP: {
     skip "DNSAdvantage messes up nonexistent server tests", 2
       if $dns_disadvantage;
 @results= run_tests(
-    sub { page_unlike("http://totally.nonexistent.gorkelplatz.freen", 
+    sub { page_unlike("http://totally.nonexistent.gorkelplatz.freen",
                       qr/text not there/,
                       "this server doesn't exist") },
     {
@@ -61,7 +61,7 @@ $message = <<EOF;
     doesn't match '(?-xism:text not there)'
 EOF
 @results= run_tests(
-    sub { page_unlike("http://perl.org/gack", 
+    sub { page_unlike("http://perl.org/gack",
                       qr/text not there/,
                       "this page doesn't exist") },
     {

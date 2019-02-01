@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 use Test::More tests=>2;
 
-@output = `examples/simple_scan<examples/ss_garbage1.in`;
+@output = `$^X -Iblib/lib examples/simple_scan<examples/ss_garbage1.in`;
 @expected = ();
 is_deeply(\@output, \@expected, "working output as expected");
 

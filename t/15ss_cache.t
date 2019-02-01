@@ -10,21 +10,21 @@ $ENV{MOJO_LOG_LEVEL} = 'error';
 
 my $pid = fork;
 if ($pid == 0) {
-  diag "starting Mojolicious server";
+  note "starting Mojolicious server";
   my @values = qw(aaaaa bbbbb ccccc ddddd eeeee fffff ggggg);
-  get "/"     => sub { shift->render_text(shift @values) };
-  get "/stop" => sub { 
-    shift->render_text("ok!"); 
-    diag 'stopping Mojolicious server';
-    kill 9,$$ 
+  get "/"     => sub { shift->render(text => shift @values) };
+  get "/stop" => sub {
+    shift->render(text => "ok!");
+    note 'stopping Mojolicious server';
+    kill 9,$$
   };
   app->start('daemon');
 }
 else {
-  diag "Waiting for test webserver to spin up";
+  note "Waiting for test webserver to spin up";
   sleep 5;
   # actual tests go here
-  my @output = `perl -Iblib/lib examples/simple_scan<examples/ss_cache.in`;
+  my @output = `$^X -Iblib/lib examples/simple_scan<examples/ss_cache.in`;
   my @expected = map {"$_\n"} split /\n/,<<EOF;
 1..9
 ok 1 - initial value OK [http://localhost:3000/] [/aaaaa/ should match]
@@ -41,7 +41,7 @@ EOF
   is_deeply(\@output, \@expected, "working output as expected");
 
   # shut down webserver
-  diag "Shutting down test webserver";
+  note "Shutting down test webserver";
   my $mech = WWW::Mechanize->new(autocheck=>0, timeout=>2);
   $mech->get('http://localhost:3000/stop');
 }

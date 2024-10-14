@@ -1,11 +1,11 @@
 use strict;
-BEGIN { 
+BEGIN {
   unshift @INC, './t';
 }
 
 my $localdaemon_ok;
 
-BEGIN { 
+BEGIN {
   eval "use HTTP::Daemon";
   $localdaemon_ok = !$@;
 
@@ -14,7 +14,7 @@ BEGIN {
 }
 
 use Test::Tester;
-use Test::More tests =>11;
+use Test::More;
 use Test::WWW::Simple;
 use LocalServer;
 use WWW::Mechanize;
@@ -71,11 +71,11 @@ SKIP: {
 
 # 3. invalid server
 SKIP: {
-  skip "DNSAdvantage messes up nonexistent server tests", 2 
+  skip "DNSAdvantage messes up nonexistent server tests", 2
     if $dns_disadvantage;
 @results = run_tests(
     sub {
-        text_like("http://switch-to-python.perl.org", 
+        text_like("http://switch-to-python.perl.org",
                   qr/500 Can't connect to switch-to-python.perl.org:80 /,
                   "this server doesn't exist")
     },
@@ -88,7 +88,7 @@ ok(!$results[1]->{ok}, 'worked as expected');
 # 4. bad page
 @results = run_tests(
     sub {
-        text_like("http://perl.org/gack", 
+        text_like("http://perl.org/gack",
                   qr/Error 404 - Error 404404 - File not foundSorry, we/,
                   "this page doesn't exist")
     },
@@ -98,3 +98,4 @@ ok(!$results[1]->{ok}, 'worked as expected');
   );
 is($results[1]->{diag}, '', "No diag to match");
 ok(!$results[1]->{ok}, "worked as expected");
+done_testing;

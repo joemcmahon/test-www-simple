@@ -3,7 +3,7 @@
    "author" : [
       "Joe McMahon <mcmahon@cpan.org>"
    ],
-   "dynamic_config" : 0,
+   "dynamic_config" : 1,
    "generated_by" : "Module::Build version 0.4234",
    "license" : [
       "perl_5"
@@ -16,25 +16,30 @@
    "prereqs" : {
       "build" : {
          "requires" : {
-            "Mojolicious" : 8.11
+            "Mojolicious" : "8.11"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0.42"
          }
       },
       "runtime" : {
          "requires" : {
-            "HTML::Tree" : 0,
-            "Regexp::Common" : 0,
-            "Test::Builder" : 0,
-            "Test::LongString" : 0,
-            "Test::Tester" : 0,
-            "WWW::Mechanize" : 0,
-            "WWW::Mechanize::Pluggable" : 1.07
+            "HTML::Tree" : "0",
+            "Regexp::Common" : "0",
+            "Test::Builder" : "0",
+            "Test::LongString" : "0",
+            "Test::Tester" : "0",
+            "WWW::Mechanize" : "0",
+            "WWW::Mechanize::Pluggable" : "1.07"
          }
       }
    },
    "provides" : {
       "Test::WWW::Simple" : {
          "file" : "lib/Test/WWW/Simple.pm",
-         "version" : "0.35"
+         "version" : "0.36"
       }
    },
    "release_status" : "stable",
@@ -43,6 +48,6 @@
          "http://dev.perl.org/licenses/"
       ]
    },
-   "version" : "0.35",
+   "version" : "0.36",
    "x_serialization_backend" : "JSON::PP version 4.16"
 }
